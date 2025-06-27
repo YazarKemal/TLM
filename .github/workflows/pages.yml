@@ -1,4 +1,5 @@
 name: Deploy GitHub Pages
+
 on:
   push:
     branches: [ main ]
@@ -14,9 +15,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 🔽  BURAYA YOLU EKLİYORUZ
-      - uses: actions/upload-pages-artifact@v3
+      - name: Upload artifact            # ← açıklama satırı (opsiyonel)
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: .          # kök dizindeki tüm dosyaları gönder
+          path: .                        # kök dizindeki her şeyi gönder
 
       - uses: actions/deploy-pages@v4
