@@ -370,6 +370,16 @@
                     <input type="number" class="parameter-input" id="evolution-time" value="10" placeholder="Time (μs)">
                     <input type="number" class="parameter-input" id="time-steps" value="1000" placeholder="Steps">
                     <input type="number" class="parameter-input" id="mc-runs" value="10" placeholder="MC Runs">
+                    <!--  Experiment JSON loader  -->
+<div class="parameter-group">
+  <label class="parameter-label">Load Experiment JSON</label>
+  <input type="file"
+         id="expLoader"
+         accept=".json"
+         class="parameter-input"
+         style="margin-top:4px;">
+</div>
+
                 </div>
 
                 <div class="parameter-group">
@@ -1335,6 +1345,24 @@
         function showLoading(show) {
             document.getElementById('loading').classList.toggle('active', show);
         }
+        /* === Experiment Loader === */
+document.getElementById('expLoader').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const cfg = JSON.parse(await file.text());
+
+  // Form alanlarını doldur
+  document.getElementById('num-qubits').value        = cfg.numQubits;
+  document.getElementById('initial-state').value     = cfg.initialState;
+  document.getElementById('hamiltonian-input').value = cfg.hamiltonian;
+  document.getElementById('evolution-time').value    = cfg.tMax;
+  document.getElementById('time-steps').value        = cfg.steps;
+  document.getElementById('mc-runs').value           = cfg.mcRuns;
+
+  alert('Deney ayarı yüklendi: ' + cfg.title);
+});
+
     </script>
 </body>
 </html>
