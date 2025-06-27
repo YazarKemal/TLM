@@ -1,5 +1,4 @@
 name: Deploy GitHub Pages
-
 on:
   push:
     branches: [ main ]
@@ -14,5 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # 🔽  BURAYA YOLU EKLİYORUZ
       - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .          # kök dizindeki tüm dosyaları gönder
+
       - uses: actions/deploy-pages@v4
