@@ -1032,6 +1032,12 @@
             });
             if (event && event.target) {
                 event.target.classList.add('active');
+                  // --- Bloch sekmesi görünür olduğunda tuvali yeniden boyutlandır ---
+  if (tabName === 'bloch' && blochRenderer && blochCamera) {
+    const container = document.getElementById('blochContainer');
+    blochRenderer.setSize(container.clientWidth, container.clientHeight);
+    blochCamera.aspect = container.clientWidth / container.clientHeight;
+    blochCamera.updateProjectionMatrix();
             }
             
             // Update content
