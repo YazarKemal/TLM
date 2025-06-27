@@ -902,6 +902,7 @@
             simulation.dt = tMax / steps;
             
             runEvolutionLoop(runData, tMax);
+            
         }
 
         function runEvolutionLoop(runData, tMax) {
@@ -934,6 +935,7 @@
             // Update display every 10 steps
             if (Math.floor(simulation.currentTime / simulation.dt) % 10 === 0) {
                 updateDisplay(metrics);
+                updateBlochVector();
                 updateCharts();
             }
             
@@ -1362,6 +1364,30 @@ document.getElementById('expLoader').addEventListener('change', async (e) => {
 
   alert('Deney ayarı yüklendi: ' + cfg.title);
 });
+        /* === Bloch vector update === */
+document.getElementById('expLoader').addEventListener('change', async (e) => { /* bu satırdan sonrası varsa dokunma */ });
+
+function updateBlochVector() {
+  if (!simulation.densityMatrix || !blochScene) return;
+
+  // 1. kubitin tek-kubit yoğunluk matrisi
+  const rho = math.subset(simulation.densityMatrix, math.index([0,1],[0,1]));
+  const x = 2 * getReal(rho.get([0,1]));
+  const y = -2 * getImaginary(rho.get([0,1]));
+  const z = getReal(rho.get([0,0])) - getReal(rho.get([1,1]));
+
+  // Küre üzerindeki nokta
+  if (!blochScene.getObjectByName('stateDot')) {
+    const dot = new THREE.Mesh(
+      new THREE.SphereGeometry(0.05, 16, 16),
+      new THREE.MeshBasicMaterial({ color: 0xff00ff })
+    );
+    dot.name = 'stateDot';
+    blochScene.add(dot);
+  }
+  const dot = blochScene.getObjectByName('stateDot');
+  dot.position.set(x, y, z);
+}
 
     </script>
 </body>
