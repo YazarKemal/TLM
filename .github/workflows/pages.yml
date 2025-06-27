@@ -1,4 +1,4 @@
-name: Deploy GitHub Pages
+name: Deploy static site to Pages
 
 on:
   push:
@@ -9,15 +9,23 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Upload artifact            # ← açıklama satırı (opsiyonel)
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .                        # kök dizindeki her şeyi gönder
+      # GitHub Pages için ortamı yapılandır
+      - uses: actions/configure-pages@v4
 
+      #  ⬇️  KÖK DİZİNİ YÜKLÜYORUZ
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: "."
+
+      # Yayımla
       - uses: actions/deploy-pages@v4
