@@ -392,10 +392,10 @@
 
             <!-- Orta Panel -->
             <div class="panel">
-                <div class="tabs">
-                    <div class="tab active" onclick="switchTab(event, 'dynamics')">Dynamics</div>
-                    <div class="tab" onclick="switchTab(event, 'bloch')">Bloch Sphere</div>
-                    <div class="tab" onclick="switchTab(event, 'statistics')">Statistics</div>
+               <div class="tabs">
+  <div class="tab active" onclick="switchTab(event, 'dynamics')">Dynamics</div>
+  <div class="tab"        onclick="switchTab(event,  'bloch')">Bloch Sphere</div>
+  <div class="tab"        onclick="switchTab(event,  'statistics')">Statistics</div>
                 </div>
 
                 <div id="tab-dynamics" class="tab-content active">
@@ -555,6 +555,32 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeCharts();
             initializeBlochSphere();
+            // ===== Bloch Küresi animasyonu =====
+function animateBloch() {
+  requestAnimationFrame(animateBloch);
+
+  // küreyi yavaşça döndürmek istersen:
+  if (blochSphere) blochSphere.rotation.y += 0.003;
+
+  blochRenderer.render(blochScene, blochCamera);
+}
+
+            // Küre ve eksenleri sahneye ekle
+blochScene.add(blochSphere);
+const axesHelper = new THREE.AxesHelper(1.5);
+blochScene.add(axesHelper);
+
+// Durum noktasını ekle
+const dot = new THREE.Mesh(
+    new THREE.SphereGeometry(0.08, 16, 16),
+    new THREE.MeshBasicMaterial({ color: 0xff00ff })
+);
+dot.name = 'stateDot';
+dot.position.set(0, 0, 1);  // kuzey kutbu
+blochScene.add(dot);
+
+// Animasyonu başlat
+animateBloch();
             initializeMatterPhysics();
             log("TLM Laboratory v2.1 initialized", "info");
             log("Enhanced parser ready", "success");
@@ -1025,29 +1051,27 @@
 
         // === UI FUNCTIONS ===
         
-        function switchTab(event, tabName) {
-            // Update tabs
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            if (event && event.target) {
-                event.target.classList.add('active');
-                  // --- Bloch sekmesi görünür olduğunda tuvali yeniden boyutlandır ---
-  if (tabName === 'bloch' && blochRenderer && blochCamera) {
-    const container = document.getElementById('blochContainer');
-    blochRenderer.setSize(container.clientWidth, container.clientHeight);
-    blochCamera.aspect = container.clientWidth / container.clientHeight;
-    blochCamera.updateProjectionMatrix();
-            }
-            
-            // Update content
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            const targetTab = document.getElementById(`tab-${tabName}`);
-            if (targetTab) {
-                targetTab.classList.add('active');
-            }
+       function switchTab(event, tabName) {
+    // sekme düğmeleri
+    document.querySelectorAll('.tab')
+            .forEach(tab => tab.classList.remove('active'));
+    if (event && event.target) event.target.classList.add('active');
+
+    // Bloch sekmesine geçerken tuvali yeniden boyutlandır
+    if (tabName === 'bloch' && blochRenderer && blochCamera) {
+        const c = document.getElementById('blochContainer');
+        blochRenderer.setSize(c.clientWidth, c.clientHeight);
+        blochCamera.aspect = c.clientWidth / c.clientHeight;
+        blochCamera.updateProjectionMatrix();
+    }
+
+    // içerikleri göster/gizle
+    document.querySelectorAll('.tab-content')
+            .forEach(el => el.classList.remove('active'));
+    const target = document.getElementById(`tab-${tabName}`);
+    if (target) target.classList.add('active');
+}
+
         }
 
         function selectPlatform(platform) {
@@ -1197,6 +1221,7 @@
             blochCamera.lookAt(0, 0, 0);
             
             blochRenderer = new THREE.WebGLRenderer({ antialias: true });
+            js<br>blochRenderer.setSize(container.clientWidth, container.clientHeight);<br>container.appendChild(blochRenderer.domElement);<br>
             blochRenderer.setSize(container.clientWidth, container.clientHeight);
             container.appendChild(blochRenderer.domElement);
             
