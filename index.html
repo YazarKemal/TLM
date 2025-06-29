@@ -1071,9 +1071,6 @@ animateBloch();
     const target = document.getElementById(`tab-${tabName}`);
     if (target) target.classList.add('active');
 }
-
-        }
-
         function selectPlatform(platform) {
             simulation.platform = platform;
             
@@ -1221,10 +1218,8 @@ animateBloch();
             blochCamera.lookAt(0, 0, 0);
             
             blochRenderer = new THREE.WebGLRenderer({ antialias: true });
-            js<br>blochRenderer.setSize(container.clientWidth, container.clientHeight);<br>container.appendChild(blochRenderer.domElement);<br>
             blochRenderer.setSize(container.clientWidth, container.clientHeight);
             container.appendChild(blochRenderer.domElement);
-            
             const geometry = new THREE.SphereGeometry(1, 32, 32);
             const material = new THREE.MeshBasicMaterial({
                 color: 0x00ffff,
