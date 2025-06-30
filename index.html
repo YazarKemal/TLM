@@ -555,32 +555,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeCharts();
             initializeBlochSphere();
-            // ===== Bloch Küresi animasyonu =====
-function animateBloch() {
-  requestAnimationFrame(animateBloch);
-
-  // küreyi yavaşça döndürmek istersen:
-  if (blochSphere) blochSphere.rotation.y += 0.003;
-
-  blochRenderer.render(blochScene, blochCamera);
-}
-
-            // Küre ve eksenleri sahneye ekle
-blochScene.add(blochSphere);
-const axesHelper = new THREE.AxesHelper(1.5);
-blochScene.add(axesHelper);
-
-// Durum noktasını ekle
-const dot = new THREE.Mesh(
-    new THREE.SphereGeometry(0.08, 16, 16),
-    new THREE.MeshBasicMaterial({ color: 0xff00ff })
-);
-dot.name = 'stateDot';
-dot.position.set(0, 0, 1);  // kuzey kutbu
-blochScene.add(dot);
-
-// Animasyonu başlat
-animateBloch();
             initializeMatterPhysics();
             log("TLM Laboratory v2.1 initialized", "info");
             log("Enhanced parser ready", "success");
