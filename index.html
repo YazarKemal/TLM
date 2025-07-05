@@ -310,6 +310,23 @@
             margin: 0 auto 15px;
         }
 
+        /* === Temporal Field Visualization === */
+        .temporal-field-visual {
+            width: 100%;
+            height: 150px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            margin: 10px 0;
+            background: radial-gradient(circle, rgba(0,255,255,0.3), transparent);
+            animation: radialPulse 4s infinite;
+        }
+
+        @keyframes radialPulse {
+            0% { background: radial-gradient(circle, rgba(0,255,255,0.3), transparent); }
+            50% { background: radial-gradient(circle, rgba(255,0,102,0.4), transparent); }
+            100% { background: radial-gradient(circle, rgba(0,255,255,0.3), transparent); }
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -420,6 +437,27 @@
                     <div class="parameter-group">
                         <h3 style="color: #00ffff; margin-bottom: 10px;">Density Matrix ρ(t)</h3>
                         <div id="density-matrix" class="matrix-display"></div>
+                    </div>
+
+                    <div class="parameter-group" id="temporal-field-module">
+                        <h3 style="color: #ffaaff; margin-bottom: 10px;">Temporal Field Theory</h3>
+                        <div style="text-align:center; margin-bottom:10px; color:#aaa;">T̂(x,t) = t₀ + α(x)τ̂ + β(x)∇τ̂ + γ(x)τ̂²</div>
+                        <label class="parameter-label">α(x)</label>
+                        <input type="range" id="alpha-slider" class="parameter-input" min="0" max="2" step="0.01" value="1">
+                        <label class="parameter-label">β(x)</label>
+                        <input type="range" id="beta-slider" class="parameter-input" min="-1" max="1" step="0.01" value="0">
+                        <label class="parameter-label">γ(x)</label>
+                        <input type="range" id="gamma-slider" class="parameter-input" min="0" max="0.5" step="0.01" value="0.1">
+                        <div id="temporal-visual" class="temporal-field-visual"></div>
+                        <button class="control-btn btn-primary" onclick="generateTemporalField()">Generate Temporal Field</button>
+                        <div class="data-row">
+                            <span class="data-label">Field Strength</span>
+                            <span class="data-value" id="field-strength">0.000</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Temporal Flux</span>
+                            <span class="data-value" id="temporal-flux">0.000</span>
+                        </div>
                     </div>
                 </div>
 
@@ -556,6 +594,7 @@
             initializeCharts();
             initializeBlochSphere();
             initializeMatterPhysics();
+            generateTemporalField();
             log("TLM Laboratory v2.1 initialized", "info");
             log("Enhanced parser ready", "success");
         });
@@ -1337,6 +1376,24 @@
 
         function showLoading(show) {
             document.getElementById('loading').classList.toggle('active', show);
+        }
+
+        function generateTemporalField() {
+            const alpha = parseFloat(document.getElementById('alpha-slider').value);
+            const beta = parseFloat(document.getElementById('beta-slider').value);
+            const gamma = parseFloat(document.getElementById('gamma-slider').value);
+
+            const strength = Math.abs(alpha) + Math.abs(beta) + Math.abs(gamma);
+            const flux = alpha * gamma - beta;
+
+            document.getElementById('field-strength').textContent = strength.toFixed(3);
+            document.getElementById('temporal-flux').textContent = flux.toFixed(3);
+
+            const intensity = Math.min(1, strength / 3);
+            const visual = document.getElementById('temporal-visual');
+            visual.style.background = `radial-gradient(circle, rgba(255,0,255,${0.2 + 0.8*intensity}), transparent)`;
+
+            log(`Temporal field generated (α=${alpha}, β=${beta}, γ=${gamma})`, 'info');
         }
         /* === Experiment Loader === */
 document.getElementById('expLoader').addEventListener('change', async (e) => {
