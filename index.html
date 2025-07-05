@@ -321,10 +321,27 @@
             animation: radialPulse 4s infinite;
         }
 
-        @keyframes radialPulse {
+@keyframes radialPulse {
             0% { background: radial-gradient(circle, rgba(0,255,255,0.3), transparent); }
             50% { background: radial-gradient(circle, rgba(255,0,102,0.4), transparent); }
             100% { background: radial-gradient(circle, rgba(0,255,255,0.3), transparent); }
+        }
+
+        .theory-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 8px;
+            margin-bottom: 10px;
+            font-size: 0.85em;
+            color: #ccc;
+        }
+
+        .equation-display {
+            text-align: center;
+            color: #00d2d2;
+            margin: 10px 0;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         @keyframes spin {
@@ -458,6 +475,20 @@
                             <span class="data-label">Temporal Flux</span>
                             <span class="data-value" id="temporal-flux">0.000</span>
                         </div>
+                    </div>
+
+                    <div class="parameter-group" id="modified-schrodinger-module">
+                        <h3 style="color: #00ff80; margin-bottom: 10px;">Modified Schrödinger Dynamics</h3>
+                        <div class="theory-box">
+                            iℏ ∂ψ/∂T̂ = Ĥ(T̂)ψ<br>
+                            This formulation governs temporal evolution under a time operator.
+                        </div>
+                        <label class="parameter-label">Temporal Evolution Rate</label>
+                        <input type="range" id="temporal-rate-slider" class="parameter-input" min="0.1" max="3" step="0.1" value="1">
+                        <label class="parameter-label">Field-Hamiltonian Coupling</label>
+                        <input type="range" id="field-ham-coupling-slider" class="parameter-input" min="0" max="1" step="0.01" value="0.5">
+                        <div class="equation-display" id="modified-eq">Ψ(T̂) = e<sup>-iĤ(T̂)τ/ℏ</sup> Ψ₀</div>
+                        <button class="control-btn btn-primary" onclick="runModifiedEvolution()">Run Modified Evolution</button>
                     </div>
                 </div>
 
@@ -1394,6 +1425,24 @@
             visual.style.background = `radial-gradient(circle, rgba(255,0,255,${0.2 + 0.8*intensity}), transparent)`;
 
             log(`Temporal field generated (α=${alpha}, β=${beta}, γ=${gamma})`, 'info');
+        }
+
+        function runModifiedEvolution() {
+            const rate = parseFloat(document.getElementById('temporal-rate-slider').value);
+            const coupling = parseFloat(document.getElementById('field-ham-coupling-slider').value);
+
+            log(`Running modified evolution (rate=${rate}, coupling=${coupling})`, 'info');
+
+            simulation.dt = 0.01 / rate;
+
+            if (simulation.hamiltonian) {
+                simulation.hamiltonian = math.multiply(simulation.hamiltonian, coupling);
+            }
+
+            const eq = document.getElementById('modified-eq');
+            if (eq) {
+                eq.textContent = 'Ψ(T̂) = e^(-iĤ(T̂)τ/ℏ) Ψ₀';
+            }
         }
         /* === Experiment Loader === */
 document.getElementById('expLoader').addEventListener('change', async (e) => {
