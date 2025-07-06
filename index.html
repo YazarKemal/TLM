@@ -291,10 +291,15 @@
         }
         #blochContainer {
             width: 100%;
-            height: 400px;
+            height: 420px;
+            position: relative;
             background: rgba(0, 0, 0, 0.7);
             border-radius: 8px;
             margin-bottom: 15px;
+        }
+        #blochContainer canvas {
+            position: absolute;
+            inset: 0;
         }
 
         .loading {
@@ -1441,7 +1446,8 @@ let dynamicsChart, histogramChart;
 let blochVector;      // ArrowHelper referansı
         
         function initializeBlochSphere() {
-            const container = document.getElementById('blochContainer');
+            // Use the (single) container inside the Bloch tab.
+            const container = document.querySelector('#tab-bloch #blochContainer');
 
             blochScene = new THREE.Scene();
 
