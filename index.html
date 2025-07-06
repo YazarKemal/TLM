@@ -1299,19 +1299,23 @@
             .forEach(tab => tab.classList.remove('active'));
     if (event && event.target) event.target.classList.add('active');
 
-    // Bloch sekmesine geçerken tuvali yeniden boyutlandır
-    if (tabName === 'bloch' && blochRenderer && blochCamera) {
-        const cont = document.getElementById('blochContainer');
-        blochRenderer.setSize(cont.clientWidth, cont.clientHeight);
-        blochCamera.aspect = cont.clientWidth / cont.clientHeight;
-        blochCamera.updateProjectionMatrix();
-    }
-
     // içerikleri göster/gizle
     document.querySelectorAll('.tab-content')
             .forEach(el => el.classList.remove('active'));
     const target = document.getElementById(`tab-${tabName}`);
     if (target) target.classList.add('active');
+
+    // Bloch sekmesi görünür olduğunda boyutları güncelle
+    if (tabName === 'bloch' && blochRenderer && blochCamera) {
+        const cont = document.getElementById('blochContainer');
+        cont.style.visibility = 'visible';
+        const w = cont.clientWidth  || cont.parentElement.clientWidth;
+        const h = cont.clientHeight || cont.parentElement.clientHeight;
+        blochRenderer.setSize(w, h);
+        blochCamera.aspect = w / h;
+        blochCamera.updateProjectionMatrix();
+        resetBlochSphereVisibility();
+    }
 }
         function selectPlatform(platform) {
             simulation.platform = platform;
@@ -1451,47 +1455,58 @@ let blochVector;      // ArrowHelper referansı
 
             blochScene = new THREE.Scene();
 
-            blochCamera = new THREE.PerspectiveCamera(
-                75,
-                container.clientWidth / container.clientHeight,
-                0.1,
-                1000
-            );
+            const width  = container.clientWidth  || 400;
+            const height = container.clientHeight || 400;
+            blochCamera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
             blochCamera.position.z = 3;
 
             blochRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            blochRenderer.setPixelRatio(window.devicePixelRatio || 1);   // Retina netliği
-            blochRenderer.setSize(container.clientWidth, container.clientHeight);
-            blochRenderer.domElement.style.width  = '100%';
+            blochRenderer.setPixelRatio(window.devicePixelRatio || 1);
+            blochRenderer.setSize(width, height);
+            blochRenderer.domElement.style.width = '100%';
             blochRenderer.domElement.style.height = '100%';
             container.appendChild(blochRenderer.domElement);
 
+            // Material with lighting support
+            const sphereMat = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                shininess: 80,
+                transparent: false
+            });
+
             blochSphere = new THREE.Mesh(
                 new THREE.SphereGeometry(1, 32, 32),
-                new THREE.MeshBasicMaterial({ color: 0xaaaaaa, wireframe: true })
+                sphereMat
             );
             blochScene.add(blochSphere);
             blochScene.add(new THREE.AxesHelper(1.5));
+            blochScene.add(new THREE.AmbientLight(0x404040));
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(2, 2, 3);
+            blochScene.add(dirLight);
 
             animateBloch();
 
             window.addEventListener('resize', () => {
-                blochRenderer.setSize(container.clientWidth, container.clientHeight);
-                blochCamera.aspect = container.clientWidth / container.clientHeight;
+                const w = container.clientWidth  || width;
+                const h = container.clientHeight || height;
+                blochRenderer.setSize(w, h);
+                blochCamera.aspect = w / h;
                 blochCamera.updateProjectionMatrix();
             });
         }
 
         function animateBloch() {
-            requestAnimationFrame(animateBloch);
-            
-            if (blochSphere) {
-                blochSphere.rotation.y += 0.001;
-            }
-            
-            if (blochRenderer && blochScene && blochCamera) {
-                blochRenderer.render(blochScene, blochCamera);
-            }
+            if (!blochRenderer) return;
+            blochRenderer.setAnimationLoop(() => {
+                if (blochSphere) {
+                    blochSphere.rotation.y += 0.001;
+                }
+
+                if (blochRenderer && blochScene && blochCamera) {
+                    blochRenderer.render(blochScene, blochCamera);
+                }
+            });
         }
 
         // Arrow representing the Bloch vector
@@ -1514,6 +1529,17 @@ let blochVector;      // ArrowHelper referansı
             const dir = new THREE.Vector3(x, y, z).normalize();
             blochVector.setDirection(dir);
             blochVector.setLength(length);
+        }
+
+        function resetBlochSphereVisibility() {
+            if (blochSphere) {
+                blochScene.remove(blochSphere);
+                blochScene.add(blochSphere);
+            }
+            if (blochVector) {
+                blochScene.remove(blochVector);
+                blochScene.add(blochVector);
+            }
         }
 
         function blochFromQubit(alpha, beta) {
