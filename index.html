@@ -1293,30 +1293,32 @@
 
         // === UI FUNCTIONS ===
         
-       function switchTab(event, tabName) {
-    // sekme düğmeleri
-    document.querySelectorAll('.tab')
-            .forEach(tab => tab.classList.remove('active'));
-    if (event && event.target) event.target.classList.add('active');
+        function switchTab(event, tabName) {
+          // sekme düğmeleri
+          document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+          if (event && event.target) event.target.classList.add('active');
 
-    // içerikleri göster/gizle
-    document.querySelectorAll('.tab-content')
+          // içerikleri göster/gizle
+          document
+            .querySelectorAll('.tab-content')
             .forEach(el => el.classList.remove('active'));
-    const target = document.getElementById(`tab-${tabName}`);
-    if (target) target.classList.add('active');
+          const target = document.getElementById(`tab-${tabName}`);
+          if (target) target.classList.add('active');
 
-    // Bloch sekmesi görünür olduğunda boyutları güncelle
-    if (tabName === 'bloch' && blochRenderer && blochCamera) {
-        const cont = document.getElementById('blochContainer');
-        cont.style.visibility = 'visible';
-        const w = cont.clientWidth  || cont.parentElement.clientWidth;
-        const h = cont.clientHeight || cont.parentElement.clientHeight;
-        blochRenderer.setSize(w, h);
-        blochCamera.aspect = w / h;
-        blochCamera.updateProjectionMatrix();
-        resetBlochSphereVisibility();
-    }
-}
+          // Bloch sekmesi görünür olduğunda boyutları güncelle
+          if (tabName === 'bloch' && blochRenderer && blochCamera) {
+            const cont = document.getElementById('blochContainer');
+            cont.style.display = 'block';
+            const w = cont.clientWidth || cont.parentElement.clientWidth;
+            const h = cont.clientHeight || cont.parentElement.clientHeight;
+            blochRenderer.setSize(w, h);
+            blochCamera.aspect = w / h;
+            blochCamera.updateProjectionMatrix();
+
+            blochRenderer.render(blochScene, blochCamera);
+            if (blochSphere) blochSphere.visible = true;
+          }
+        }
         function selectPlatform(platform) {
             simulation.platform = platform;
             
@@ -1450,63 +1452,56 @@ let dynamicsChart, histogramChart;
 let blochVector;      // ArrowHelper referansı
         
         function initializeBlochSphere() {
-            // Use the (single) container inside the Bloch tab.
-            const container = document.querySelector('#tab-bloch #blochContainer');
+          const container = document.querySelector('#tab-bloch #blochContainer');
+          while (container.firstChild) container.removeChild(container.firstChild);
 
-            blochScene = new THREE.Scene();
+          const width = container.clientWidth || 400;
+          const height = container.clientHeight || 400;
 
-            const width  = container.clientWidth  || 400;
-            const height = container.clientHeight || 400;
-            blochCamera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-            blochCamera.position.z = 3;
+          blochScene = new THREE.Scene();
+          blochCamera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+          blochCamera.position.set(0, 0, 5);
+          blochCamera.lookAt(0, 0, 0);
 
-            blochRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            blochRenderer.setPixelRatio(window.devicePixelRatio || 1);
-            blochRenderer.setSize(width, height);
-            blochRenderer.domElement.style.width = '100%';
-            blochRenderer.domElement.style.height = '100%';
-            container.appendChild(blochRenderer.domElement);
+          blochRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+          blochRenderer.setPixelRatio(window.devicePixelRatio || 1);
+          blochRenderer.setSize(width, height);
+          container.appendChild(blochRenderer.domElement);
 
-            // Material with lighting support
-            const sphereMat = new THREE.MeshPhongMaterial({
-                color: 0xffffff,
-                shininess: 80,
-                transparent: false
-            });
+          const sphereMat = new THREE.MeshPhongMaterial({
+            color: 0x00ffff,
+            shininess: 100,
+            transparent: false,
+          });
 
-            blochSphere = new THREE.Mesh(
-                new THREE.SphereGeometry(1, 32, 32),
-                sphereMat
-            );
-            blochScene.add(blochSphere);
-            blochScene.add(new THREE.AxesHelper(1.5));
-            blochScene.add(new THREE.AmbientLight(0x404040));
-            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            dirLight.position.set(2, 2, 3);
-            blochScene.add(dirLight);
+          blochSphere = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 32), sphereMat);
+          blochScene.add(blochSphere);
+          blochScene.add(new THREE.AxesHelper(1.5));
 
-            animateBloch();
+          blochScene.add(new THREE.AmbientLight(0x808080, 1.5));
+          const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+          dirLight.position.set(5, 5, 5);
+          blochScene.add(dirLight);
 
-            window.addEventListener('resize', () => {
-                const w = container.clientWidth  || width;
-                const h = container.clientHeight || height;
-                blochRenderer.setSize(w, h);
-                blochCamera.aspect = w / h;
-                blochCamera.updateProjectionMatrix();
-            });
+          animateBloch();
+
+          window.addEventListener('resize', () => {
+            const w = container.clientWidth || width;
+            const h = container.clientHeight || height;
+            blochRenderer.setSize(w, h);
+            blochCamera.aspect = w / h;
+            blochCamera.updateProjectionMatrix();
+          });
         }
 
         function animateBloch() {
-            if (!blochRenderer) return;
-            blochRenderer.setAnimationLoop(() => {
-                if (blochSphere) {
-                    blochSphere.rotation.y += 0.001;
-                }
-
-                if (blochRenderer && blochScene && blochCamera) {
-                    blochRenderer.render(blochScene, blochCamera);
-                }
-            });
+          if (!blochRenderer) return;
+          blochRenderer.setAnimationLoop(() => {
+            if (blochSphere) {
+              blochSphere.rotation.y += 0.01;
+            }
+            blochRenderer.render(blochScene, blochCamera);
+          });
         }
 
         // Arrow representing the Bloch vector
