@@ -532,11 +532,33 @@
                             <span class="data-label">Temporal Energy</span>
                             <span class="data-value" id="temporal-energy">0.000</span>
                         </div>
-                        <div class="data-row">
-                            <span class="data-label">Time Dilation</span>
-                            <span class="data-value" id="time-dilation">0.000</span>
-                        </div>
+                    <div class="data-row">
+                        <span class="data-label">Time Dilation</span>
+                        <span class="data-value" id="time-dilation">0.000</span>
                     </div>
+                </div>
+
+                <div class="parameter-group" id="temporal-uncertainty-module">
+                    <h3 style="color: #ff8800; margin-bottom: 10px;">Temporal Uncertainty</h3>
+                    <div class="equation-display">ΔT̂ · ΔÊ ≥ ℏ/2</div>
+                    <div class="theory-box">
+                        The time-energy uncertainty principle links precision in
+                        time measurements to increased energy uncertainty.
+                    </div>
+                    <label class="parameter-label">Time Uncertainty ΔT̂</label>
+                    <input type="range" id="time-uncertainty-slider" class="parameter-input" min="0.1" max="10" step="0.1" value="1">
+                    <label class="parameter-label">Energy Scale (eV)</label>
+                    <input type="range" id="energy-scale-slider" class="parameter-input" min="1" max="1000" step="1" value="100">
+                    <button class="control-btn btn-primary" onclick="calculateUncertainty()">Calculate Uncertainty Bounds</button>
+                    <div class="data-row">
+                        <span class="data-label">Min Energy ΔE</span>
+                        <span class="data-value" id="min-energy">0.000</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Quantum Limit</span>
+                        <span class="data-value" id="quantum-limit">ℏ/2</span>
+                    </div>
+                </div>
 
                     <div class="parameter-group" id="modified-schrodinger-module">
                         <h3 style="color: #00ff80; margin-bottom: 10px;">Modified Schrödinger Dynamics</h3>
@@ -1597,6 +1619,19 @@
             const mu = parseFloat(document.getElementById('temporal-mass-slider').value);
             const gradient = density * mu;
             log(`Temporal gradient calculated: ${gradient.toFixed(3)}`, 'info');
+        }
+
+        function calculateUncertainty() {
+            const dT = parseFloat(document.getElementById('time-uncertainty-slider').value);
+            const energyScale = parseFloat(document.getElementById('energy-scale-slider').value);
+            const hbar = 6.582e-16; // eV·s
+            const quantumLimit = hbar / 2;
+            const deltaE = quantumLimit / dT;
+
+            document.getElementById('min-energy').textContent = deltaE.toExponential(3) + ' eV';
+            document.getElementById('quantum-limit').textContent = quantumLimit.toExponential(3) + ' eV·s';
+
+            log(`Uncertainty bounds calculated (ΔT=${dT}, scale=${energyScale} eV)`, 'info');
         }
         /* === Experiment Loader === */
 document.getElementById('expLoader').addEventListener('change', async (e) => {
