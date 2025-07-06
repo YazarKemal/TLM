@@ -321,6 +321,22 @@
             animation: radialPulse 4s infinite;
         }
 
+        /* === Causal Loop Visualization === */
+        .causal-loop-visual {
+            width: 100%;
+            height: 150px;
+            border: 1px solid #333;
+            border-radius: 50%;
+            margin: 10px 0;
+            background: conic-gradient(from 0deg, #00ffff, #ff0066, #00ffff);
+            animation: spinConic 6s linear infinite;
+        }
+
+        @keyframes spinConic {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+
 @keyframes radialPulse {
             0% { background: radial-gradient(circle, rgba(0,255,255,0.3), transparent); }
             50% { background: radial-gradient(circle, rgba(255,0,102,0.4), transparent); }
@@ -488,7 +504,33 @@
                         <label class="parameter-label">Field-Hamiltonian Coupling</label>
                         <input type="range" id="field-ham-coupling-slider" class="parameter-input" min="0" max="1" step="0.01" value="0.5">
                         <div class="equation-display" id="modified-eq">Ψ(T̂) = e<sup>-iĤ(T̂)τ/ℏ</sup> Ψ₀</div>
+
                         <button class="control-btn btn-primary" onclick="runModifiedEvolution()">Run Modified Evolution</button>
+                    </div>
+
+                    <div class="parameter-group" id="causal-engineering-module">
+                        <h3 style="color: #ff00ff; margin-bottom: 10px;">Causal Engineering</h3>
+                        <div class="equation-display">∇·C = ρₓₐᵤₛₐₗ &nbsp;&nbsp; ∇×C = ∂B̂ₜ/∂t</div>
+                        <label class="parameter-label">Causal Loop Strength</label>
+                        <input type="range" id="causal-strength-slider" class="parameter-input" min="0" max="1" step="0.01" value="0.3">
+                        <label class="parameter-label">Paradox Resolution Method</label>
+                        <select id="resolution-method" class="parameter-input">
+                            <option value="novikov">Novikov Self-Consistency</option>
+                            <option value="many-worlds">Many-Worlds Resolution</option>
+                            <option value="chronology">Chronology Protection</option>
+                            <option value="bootstrap">Bootstrap Stabilization</option>
+                        </select>
+                        <div id="causal-visual" class="causal-loop-visual"></div>
+                        <button class="control-btn btn-warning" onclick="detectCausalViolations()">Detect Causal Violations</button>
+                        <button class="control-btn btn-primary" onclick="createTemporalLoop()">Create Temporal Loop</button>
+                        <div class="data-row">
+                            <span class="data-label">Causality Index</span>
+                            <span class="data-value" id="causality-index">0.000</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Paradox Risk</span>
+                            <span class="data-value" id="paradox-risk">0%</span>
+                        </div>
                     </div>
                 </div>
 
@@ -540,6 +582,18 @@
                     <div class="data-row">
                         <span class="data-label">Non-Markovianity</span>
                         <span class="data-value" id="non-markovianity">0.000</span>
+                    </div>
+                </div>
+
+                <div class="parameter-group">
+                    <h3 style="color: #ff00ff; margin-bottom: 10px;">Causal Metrics</h3>
+                    <div class="data-row">
+                        <span class="data-label">Causality Index</span>
+                        <span class="data-value" id="causality-index-metric">0.000</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Paradox Risk</span>
+                        <span class="data-value" id="paradox-risk-metric">0%</span>
                     </div>
                 </div>
 
@@ -1443,6 +1497,35 @@
             if (eq) {
                 eq.textContent = 'Ψ(T̂) = e^(-iĤ(T̂)τ/ℏ) Ψ₀';
             }
+        }
+
+        function detectCausalViolations() {
+            const strength = parseFloat(document.getElementById('causal-strength-slider').value);
+            const method = document.getElementById('resolution-method').value;
+
+            const index = Math.min(1, strength * (0.5 + Math.random() * 0.5));
+            const risk = Math.min(100, index * 100);
+
+            [
+                document.getElementById('causality-index'),
+                document.getElementById('causality-index-metric')
+            ].forEach(el => { if (el) el.textContent = index.toFixed(3); });
+
+            [
+                document.getElementById('paradox-risk'),
+                document.getElementById('paradox-risk-metric')
+            ].forEach(el => { if (el) el.textContent = risk.toFixed(1) + '%'; });
+
+            log(`Causal violations analyzed using ${method}`, risk > 50 ? 'warning' : 'info');
+        }
+
+        function createTemporalLoop() {
+            const strength = parseFloat(document.getElementById('causal-strength-slider').value);
+            const visual = document.getElementById('causal-visual');
+            if (visual) {
+                visual.style.animation = 'spinConic 2s linear infinite';
+            }
+            log(`Temporal loop created (strength=${strength.toFixed(2)})`, 'success');
         }
         /* === Experiment Loader === */
 document.getElementById('expLoader').addEventListener('change', async (e) => {
