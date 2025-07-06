@@ -14,7 +14,15 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+:root {
+            --primary-color: #00ffff;
+            --accent-color: #ff0066;
+            --success-color: #00ff80;
+            --warn-color: #d4af37;
+            --gradient-neon: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            --panel-bg: rgba(10, 10, 30, 0.9);
         }
+
 
         body {
             font-family: 'JetBrains Mono', 'Courier New', monospace;
@@ -34,12 +42,12 @@
             padding: 15px 0;
             margin-bottom: 20px;
             background: rgba(0, 0, 0, 0.9);
-            border-bottom: 2px solid #00ffff;
+            border-bottom: 2px solid var(--primary-color);
         }
 
         .lab-title {
             font-size: 2.5em;
-            background: linear-gradient(45deg, #00ffff, #ff0066);
+            background: var(--gradient-neon);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -61,16 +69,17 @@
 
         .section-title {
             font-size: 1.2em;
-            color: #00ffff;
+            color: var(--primary-color);
             margin-bottom: 15px;
             text-align: center;
             text-transform: uppercase;
         }
 
-        .parameter-group {
+        .module {
             margin-bottom: 20px;
             padding: 10px;
             background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--primary-color);
             border-radius: 8px;
         }
 
@@ -106,9 +115,9 @@
         }
 
         .btn-primary {
-            border-color: #00ff80;
+            border-color: var(--success-color);
             background: rgba(0, 255, 128, 0.1);
-            color: #00ff80;
+            color: var(--success-color);
         }
 
         .btn-primary:hover {
@@ -116,15 +125,15 @@
         }
 
         .btn-danger {
-            border-color: #ff0066;
+            border-color: var(--accent-color);
             background: rgba(255, 0, 102, 0.1);
-            color: #ff0066;
+            color: var(--accent-color);
         }
 
         .btn-warning {
-            border-color: #d4af37;
+            border-color: var(--warn-color);
             background: rgba(212, 175, 55, 0.1);
-            color: #d4af37;
+            color: var(--warn-color);
         }
 
         .tabs {
@@ -148,9 +157,9 @@
         }
 
         .tab.active {
-            border-color: #00ffff;
+            border-color: var(--primary-color);
             background: rgba(0, 255, 255, 0.1);
-            color: #00ffff;
+            color: var(--primary-color);
         }
 
         .tab-content {
@@ -172,7 +181,7 @@
 
         .matrix-cell {
             background: rgba(0, 255, 255, 0.1);
-            border: 1px solid #00ffff;
+            border: 1px solid var(--primary-color);
             padding: 5px;
             text-align: center;
             border-radius: 3px;
@@ -194,7 +203,7 @@
         }
 
         .data-value {
-            color: #00ffff;
+            color: var(--primary-color);
             font-weight: bold;
             font-size: 0.85em;
         }
@@ -216,7 +225,7 @@
 
         .console-info { color: #0ff; }
         .console-error { color: #f00; }
-        .console-warning { color: #d4af37; }
+        .console-warning { color: var(--warn-color); }
         .console-success { color: #0f0; }
 
         .hamiltonian-editor {
@@ -262,9 +271,9 @@
         }
 
         .platform-btn.active {
-            border-color: #00ffff;
+            border-color: var(--primary-color);
             background: rgba(0, 255, 255, 0.2);
-            color: #00ffff;
+            color: var(--primary-color);
         }
 
         .chart-container {
@@ -275,6 +284,11 @@
             height: 250px;
         }
 
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
         #blochContainer {
             width: 100%;
             height: 400px;
@@ -292,7 +306,7 @@
             background: rgba(0, 0, 0, 0.9);
             padding: 20px;
             border-radius: 10px;
-            border: 2px solid #00ffff;
+            border: 2px solid var(--primary-color);
             z-index: 1000;
         }
 
@@ -304,7 +318,7 @@
             width: 50px;
             height: 50px;
             border: 3px solid rgba(0, 255, 255, 0.3);
-            border-top: 3px solid #00ffff;
+            border-top: 3px solid var(--primary-color);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 15px;
@@ -328,7 +342,7 @@
             border: 1px solid #333;
             border-radius: 50%;
             margin: 10px 0;
-            background: conic-gradient(from 0deg, #00ffff, #ff0066, #00ffff);
+            background: conic-gradient(from 0deg, var(--primary-color), var(--accent-color), var(--primary-color));
             animation: spinConic 6s linear infinite;
         }
 
@@ -415,7 +429,7 @@
             <div class="panel">
                 <h2 class="section-title">System Configuration</h2>
                 
-                <div class="parameter-group">
+                <div class="module">
                     <label class="parameter-label">Experimental Platform</label>
                     <div class="platform-grid">
                         <div class="platform-btn active" onclick="selectPlatform('ion')" id="plat-ion">Ion Trap</div>
@@ -425,7 +439,7 @@
                     </div>
                 </div>
 
-                <div class="parameter-group">
+                <div class="module">
                     <label class="parameter-label">Number of Qubits</label>
                     <input type="number" class="parameter-input" id="num-qubits" value="2" min="1" max="3">
                     
@@ -439,25 +453,25 @@
                     </select>
                 </div>
 
-                <div class="parameter-group">
+                <div class="module">
                     <label class="parameter-label">Hamiltonian (ℏ=1)</label>
                     <textarea class="hamiltonian-input" id="hamiltonian-input" placeholder="omega * Z_0 + omega * Z_1 + J * X_0 * X_1"></textarea>
                     <button class="control-btn btn-primary" onclick="parseHamiltonian()">Parse Hamiltonian</button>
                 </div>
 
-                <div class="parameter-group">
+                <div class="module">
                     <label class="parameter-label">TLM Protocol</label>
                     <label class="parameter-label">Reversal Strength η</label>
                     <input type="number" class="parameter-input" id="reversal-strength" value="0.95" min="0" max="1" step="0.01">
                 </div>
 
-                <div class="parameter-group">
+                <div class="module">
                     <label class="parameter-label">Evolution Parameters</label>
                     <input type="number" class="parameter-input" id="evolution-time" value="10" placeholder="Time (μs)">
                     <input type="number" class="parameter-input" id="time-steps" value="1000" placeholder="Steps">
                     <input type="number" class="parameter-input" id="mc-runs" value="10" placeholder="MC Runs">
                     <!--  Experiment JSON loader  -->
-<div class="parameter-group">
+<div class="module">
   <label class="parameter-label">Load Experiment JSON</label>
   <input type="file"
          id="expLoader"
@@ -468,7 +482,7 @@
 
                 </div>
 
-                <div class="parameter-group">
+                <div class="module">
                     <button class="control-btn btn-primary" onclick="runSimulation()">▶️ RUN SIMULATION</button>
                     <button class="control-btn btn-warning" onclick="applyTimeReversal()">⏪ TLM REVERSAL</button>
                     <button class="control-btn btn-danger" onclick="stopSimulation()">⏹️ STOP</button>
@@ -485,13 +499,14 @@
                 </div>
 
                 <div id="tab-dynamics" class="tab-content active">
-                    <div class="chart-container">
+                    <div class="module-grid">
+                    <div class="module chart-container">
                         <canvas id="dynamics-chart"></canvas>
                     </div>
                     
                     <!-- Mini Physics Engine -->
-                    <div class="parameter-group">
-                        <h3 style="color: #d4af37; margin-bottom: 10px;">⏰ Time Flow Visualization</h3>
+                    <div class="module">
+                        <h3 style="color: var(--warn-color); margin-bottom: 10px;">⏰ Time Flow Visualization</h3>
                         <div id="physBox" style="width: 260px; height: 260px; margin: 0 auto; border: 1px solid #333; border-radius: 8px; background: #000; position: relative;">
                             <canvas id="physCanvas" width="260" height="260" style="display: block;"></canvas>
                             <div style="position: absolute; bottom: 5px; left: 5px; font-size: 0.7em; color: #666;">
@@ -503,12 +518,12 @@
                         </div>
                     </div>
                     
-                    <div class="parameter-group">
-                        <h3 style="color: #00ffff; margin-bottom: 10px;">Density Matrix ρ(t)</h3>
+                    <div class="module">
+                        <h3 style="color: var(--primary-color); margin-bottom: 10px;">Density Matrix ρ(t)</h3>
                         <div id="density-matrix" class="matrix-display"></div>
                     </div>
 
-                    <div class="parameter-group" id="temporal-field-module">
+                    <div class="module" id="temporal-field-module">
                         <h3 style="color: #ffaaff; margin-bottom: 10px;">Temporal Field Theory</h3>
                         <div style="text-align:center; margin-bottom:10px; color:#aaa;">T̂(x,t) = t₀ + α(x)τ̂ + β(x)∇τ̂ + γ(x)τ̂²</div>
                         <label class="parameter-label">α(x)</label>
@@ -529,7 +544,7 @@
                         </div>
                     </div>
 
-                    <div class="parameter-group" id="chronodynamics-module">
+                    <div class="module" id="chronodynamics-module">
                         <h3 style="color: #00aaff; margin-bottom: 10px;">Chronodynamics</h3>
                         <div class="equation-display">∂²T̂/∂x² - μ²T̂ = ρₜ(x,t)</div>
                         <label class="parameter-label">Chronon Density</label>
@@ -556,7 +571,7 @@
                     </div>
                 </div>
 
-                <div class="parameter-group" id="temporal-uncertainty-module">
+                <div class="module" id="temporal-uncertainty-module">
                     <h3 style="color: #ff8800; margin-bottom: 10px;">Temporal Uncertainty</h3>
                     <div class="equation-display">ΔT̂ · ΔÊ ≥ ℏ/2</div>
                     <div class="theory-box">
@@ -578,8 +593,8 @@
                     </div>
                 </div>
 
-                    <div class="parameter-group" id="modified-schrodinger-module">
-                        <h3 style="color: #00ff80; margin-bottom: 10px;">Modified Schrödinger Dynamics</h3>
+                    <div class="module" id="modified-schrodinger-module">
+                        <h3 style="color: var(--success-color); margin-bottom: 10px;">Modified Schrödinger Dynamics</h3>
                         <div class="theory-box">
                             iℏ ∂ψ/∂T̂ = Ĥ(T̂)ψ<br>
                             This formulation governs temporal evolution under a time operator.
@@ -593,7 +608,7 @@
                         <button class="control-btn btn-primary" onclick="runModifiedEvolution()">Run Modified Evolution</button>
                     </div>
 
-                    <div class="parameter-group" id="causal-engineering-module">
+                    <div class="module" id="causal-engineering-module">
                         <h3 style="color: #ff00ff; margin-bottom: 10px;">Causal Engineering</h3>
                         <div class="equation-display">∇·C = ρₓₐᵤₛₐₗ &nbsp;&nbsp; ∇×C = ∂B̂ₜ/∂t</div>
                         <label class="parameter-label">Causal Loop Strength</label>
@@ -618,7 +633,7 @@
                     </div>
                 </div>
 
-                <div class="parameter-group" id="temporal-communication-module">
+                <div class="module" id="temporal-communication-module">
                     <h3 style="color: #ff55ff; margin-bottom: 10px;">Temporal Communication</h3>
                     <div class="equation-display">|ψ(t₁,t₂)⟩ = Σ αᵢ|ψᵢ(t₁)⟩⊗|ψᵢ(t₂)⟩</div>
                     <div class="theory-box">
@@ -640,6 +655,7 @@
                         <span class="data-value" id="comm-latency">0 μs</span>
                     </div>
                 </div>
+                </div>
             </div>
 
             <div id="tab-bloch" class="tab-content">
@@ -647,7 +663,7 @@
             </div>
 
                 <div id="tab-statistics" class="tab-content">
-                    <div class="chart-container">
+                    <div class="module chart-container">
                         <canvas id="histogram-chart"></canvas>
                     </div>
                 </div>
@@ -657,8 +673,8 @@
             <div class="panel">
                 <h2 class="section-title">Real-Time Metrics</h2>
                 
-                <div class="parameter-group">
-                    <h3 style="color: #00ffff; margin-bottom: 10px;">System State</h3>
+                <div class="module">
+                    <h3 style="color: var(--primary-color); margin-bottom: 10px;">System State</h3>
                     <div class="data-row">
                         <span class="data-label">Simulation Time</span>
                         <span class="data-value" id="sim-time">0.00 μs</span>
@@ -677,8 +693,8 @@
                     </div>
                 </div>
 
-                <div class="parameter-group">
-                    <h3 style="color: #ff0066; margin-bottom: 10px;">TLM Metrics</h3>
+                <div class="module">
+                    <h3 style="color: var(--accent-color); margin-bottom: 10px;">TLM Metrics</h3>
                     <div class="data-row">
                         <span class="data-label">Local Entropy ΔS_loc</span>
                         <span class="data-value" id="local-entropy">0.000</span>
@@ -693,7 +709,7 @@
                     </div>
                 </div>
 
-                <div class="parameter-group">
+                <div class="module">
                     <h3 style="color: #ff00ff; margin-bottom: 10px;">Causal Metrics</h3>
                     <div class="data-row">
                         <span class="data-label">Causality Index</span>
@@ -705,8 +721,8 @@
                     </div>
                 </div>
 
-                <div class="parameter-group">
-                    <h3 style="color: #d4af37; margin-bottom: 10px;">Statistics</h3>
+                <div class="module">
+                    <h3 style="color: var(--warn-color); margin-bottom: 10px;">Statistics</h3>
                     <div class="data-row">
                         <span class="data-label">Completed Runs</span>
                         <span class="data-value" id="completed-runs">0/0</span>
@@ -721,7 +737,7 @@
                     </div>
                 </div>
 
-                <div class="parameter-group">
+                <div class="module">
                     <h3 style="color: #aaa; margin-bottom: 10px;">Console</h3>
                     <div class="console" id="console">
                         <div class="console-line console-info">[INFO] TLM Lab v2.1 initialized</div>
@@ -734,7 +750,7 @@
 
     <div class="loading" id="loading">
         <div class="spinner"></div>
-        <p style="color: #00ffff; text-align: center;">Computing quantum evolution...</p>
+        <p style="color: var(--primary-color); text-align: center;">Computing quantum evolution...</p>
     </div>
 
     <script>
@@ -782,6 +798,10 @@
         };
 
         // === INITIALIZATION ===
+        function getVar(name) {
+            return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+        }
+
         
         document.addEventListener('DOMContentLoaded', function() {
             initializeCharts();
@@ -790,6 +810,9 @@
             generateTemporalField();
             generateChrononField();
             log("TLM Laboratory v2.1 initialized", "info");
+            document.querySelectorAll(".control-btn").forEach(btn => {
+                btn.addEventListener("click", () => console.log("Button triggered: " + btn.textContent.trim()));
+            });
             log("Enhanced parser ready", "success");
         });
 
@@ -845,7 +868,7 @@
                 matterBox = Bodies.rectangle(130, 50, 40, 40, {
                     restitution: 0.6, // Bouncy
                     render: {
-                        fillStyle: '#00ff80' // Start with normal time color
+                        fillStyle: getVar('--success-color') // Start with normal time color
                     }
                 });
                 
@@ -879,25 +902,25 @@
                 matterEngine.timing.timeScale = -eta;
                 
                 // Change box and ground colors to indicate time reversal
-                matterBox.render.fillStyle = '#ff0066'; // Pink for reversed time
+                matterBox.render.fillStyle = getVar('--accent-color'); // Pink for reversed time
                 matterGround.render.fillStyle = '#550033'; // Dark pink ground
                 
                 // Update status
                 document.getElementById('time-flow-status').textContent = 
                     `Reversed Flow (t → -∞) • η=${eta.toFixed(2)}`;
-                document.getElementById('time-flow-status').style.color = '#ff0066';
+                document.getElementById('time-flow-status').style.color = getVar('--accent-color');
                 
             } else {
                 // Normal time flow
                 matterEngine.timing.timeScale = 1.0;
                 
                 // Change colors back to normal
-                matterBox.render.fillStyle = '#00ff80'; // Green for normal time
+                matterBox.render.fillStyle = getVar('--success-color'); // Green for normal time
                 matterGround.render.fillStyle = '#333'; // Normal gray ground
                 
                 // Update status
                 document.getElementById('time-flow-status').textContent = 'Normal Flow (t → +∞)';
-                document.getElementById('time-flow-status').style.color = '#00ff80';
+                document.getElementById('time-flow-status').style.color = getVar('--success-color');
             }
         }
         
@@ -912,13 +935,13 @@
             
             // Reset time scale and colors
             matterEngine.timing.timeScale = 1.0;
-            matterBox.render.fillStyle = '#00ff80';
+            matterBox.render.fillStyle = getVar('--success-color');
             if (matterGround) {
                 matterGround.render.fillStyle = '#333';
             }
             
             document.getElementById('time-flow-status').textContent = 'Normal Flow (t → +∞)';
-            document.getElementById('time-flow-status').style.color = '#00ff80';
+            document.getElementById('time-flow-status').style.color = getVar('--success-color');
         }
 
         // === QUANTUM STATE FUNCTIONS ===
@@ -1167,7 +1190,7 @@
             
             // Update display every 10 steps
             if (Math.floor(simulation.currentTime / simulation.dt) % 10 === 0) {
-                updateDisplay(metrics);
+                updateMetrics(metrics);
                 updateBlochVector();
                 updateCharts();
             }
@@ -1239,6 +1262,7 @@
             // Update charts and histogram
             updateCharts();
             plotHistograms();
+            updateMetrics(calculateMetrics());
         }
 
         function calculateStatistics() {
@@ -1341,9 +1365,10 @@
             
             log("System reset", "info");
             log("Physics scene reset to initial state", "info");
+            updateMetrics({fidelity:1,purity:1,entropy:0,echo:1,nonMarkovianity:0});
         }
 
-        function updateDisplay(metrics) {
+        function updateMetrics(metrics) {
             document.getElementById('sim-time').textContent = simulation.currentTime.toFixed(2) + ' μs';
             document.getElementById('current-fidelity').textContent = metrics.fidelity.toFixed(3);
             document.getElementById('purity').textContent = metrics.purity.toFixed(3);
@@ -1357,9 +1382,9 @@
             document.getElementById('local-entropy').textContent = deltaS_local.toFixed(3);
             
             if (simulation.timeReversalActive && deltaS_local < 0) {
-                document.getElementById('local-entropy').style.color = '#00ff80';
+                document.getElementById('local-entropy').style.color = getVar('--success-color');
             } else {
-                document.getElementById('local-entropy').style.color = '#ff0066';
+                document.getElementById('local-entropy').style.color = getVar('--accent-color');
             }
             
             updateDensityMatrixDisplay();
@@ -1456,14 +1481,14 @@
                         datasets: [{
                             label: 'Fidelity',
                             data: [],
-                            borderColor: '#00ffff',
+                            borderColor: getVar('--primary-color'),
                             backgroundColor: 'rgba(0, 255, 255, 0.1)',
                             tension: 0.4,
                             pointRadius: 0
                         }, {
                             label: 'Purity',
                             data: [],
-                            borderColor: '#ff0066',
+                            borderColor: getVar('--accent-color'),
                             backgroundColor: 'rgba(255, 0, 102, 0.1)',
                             tension: 0.4,
                             pointRadius: 0
@@ -1493,7 +1518,7 @@
                             label: 'Final Fidelity Distribution',
                             data: [],
                             backgroundColor: 'rgba(0, 255, 255, 0.5)',
-                            borderColor: '#00ffff',
+                            borderColor: getVar('--primary-color'),
                             borderWidth: 1
                         }]
                     },
