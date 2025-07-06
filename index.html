@@ -332,6 +332,19 @@
             animation: spinConic 6s linear infinite;
         }
 
+        /* === Chronon Grid Visualization === */
+        .chronon-grid {
+            width: 100%;
+            height: 150px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            margin: 10px 0;
+            background:
+              repeating-linear-gradient(0deg, rgba(0,255,255,0.2) 0 2px, transparent 2px 20px),
+              repeating-linear-gradient(90deg, rgba(0,255,255,0.2) 0 2px, transparent 2px 20px);
+            animation: gridMove 5s linear infinite;
+        }
+
         @keyframes spinConic {
             from { transform: rotate(0deg); }
             to   { transform: rotate(360deg); }
@@ -341,6 +354,11 @@
             0% { background: radial-gradient(circle, rgba(0,255,255,0.3), transparent); }
             50% { background: radial-gradient(circle, rgba(255,0,102,0.4), transparent); }
             100% { background: radial-gradient(circle, rgba(0,255,255,0.3), transparent); }
+        }
+
+        @keyframes gridMove {
+            from { background-position: 0 0, 0 0; }
+            to   { background-position: 40px 40px, 40px 40px; }
         }
 
         .theory-box {
@@ -490,6 +508,33 @@
                         <div class="data-row">
                             <span class="data-label">Temporal Flux</span>
                             <span class="data-value" id="temporal-flux">0.000</span>
+                        </div>
+                    </div>
+
+                    <div class="parameter-group" id="chronodynamics-module">
+                        <h3 style="color: #00aaff; margin-bottom: 10px;">Chronodynamics</h3>
+                        <div class="equation-display">∂²T̂/∂x² - μ²T̂ = ρₜ(x,t)</div>
+                        <label class="parameter-label">Chronon Density</label>
+                        <input type="range" id="chronon-density-slider" class="parameter-input" min="0" max="10" step="0.1" value="1">
+                        <label class="parameter-label">Temporal Mass μ</label>
+                        <input type="range" id="temporal-mass-slider" class="parameter-input" min="0.1" max="5" step="0.1" value="1">
+                        <label class="parameter-label">Time Dimension Count</label>
+                        <select id="time-dimensions-select" class="parameter-input">
+                            <option value="1">1D</option>
+                            <option value="2">2D</option>
+                            <option value="3">3D</option>
+                            <option value="4">4D</option>
+                        </select>
+                        <div id="chronon-visual" class="chronon-grid"></div>
+                        <button class="control-btn btn-primary" onclick="generateChrononField()">Generate Chronon Field</button>
+                        <button class="control-btn btn-warning" onclick="calculateTemporalGradient()">Calculate Temporal Gradient</button>
+                        <div class="data-row">
+                            <span class="data-label">Temporal Energy</span>
+                            <span class="data-value" id="temporal-energy">0.000</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Time Dilation</span>
+                            <span class="data-value" id="time-dilation">0.000</span>
                         </div>
                     </div>
 
@@ -680,6 +725,7 @@
             initializeBlochSphere();
             initializeMatterPhysics();
             generateTemporalField();
+            generateChrononField();
             log("TLM Laboratory v2.1 initialized", "info");
             log("Enhanced parser ready", "success");
         });
@@ -1526,6 +1572,31 @@
                 visual.style.animation = 'spinConic 2s linear infinite';
             }
             log(`Temporal loop created (strength=${strength.toFixed(2)})`, 'success');
+        }
+
+        function generateChrononField() {
+            const density = parseFloat(document.getElementById('chronon-density-slider').value);
+            const mu = parseFloat(document.getElementById('temporal-mass-slider').value);
+            const dims = parseInt(document.getElementById('time-dimensions-select').value, 10);
+
+            const energy = 0.5 * density * density * mu * dims;
+            const dilation = 1 / (1 + mu * density);
+
+            document.getElementById('temporal-energy').textContent = energy.toFixed(3);
+            document.getElementById('time-dilation').textContent = dilation.toFixed(3);
+
+            const visual = document.getElementById('chronon-visual');
+            const intensity = Math.min(1, energy / 10);
+            visual.style.boxShadow = `0 0 15px rgba(0,255,255,${intensity})`;
+
+            log(`Chronon field generated (ρ=${density}, μ=${mu}, D=${dims})`, 'info');
+        }
+
+        function calculateTemporalGradient() {
+            const density = parseFloat(document.getElementById('chronon-density-slider').value);
+            const mu = parseFloat(document.getElementById('temporal-mass-slider').value);
+            const gradient = density * mu;
+            log(`Temporal gradient calculated: ${gradient.toFixed(3)}`, 'info');
         }
         /* === Experiment Loader === */
 document.getElementById('expLoader').addEventListener('change', async (e) => {
