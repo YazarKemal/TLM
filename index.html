@@ -345,6 +345,18 @@
             animation: gridMove 5s linear infinite;
         }
 
+        /* === Temporal Communication Visualization === */
+        .temporal-comm-visual {
+            width: 100%;
+            height: 150px;
+            border: 1px solid #333;
+            border-radius: 50%;
+            margin: 10px 0;
+            background:
+              repeating-radial-gradient(circle, rgba(0,255,255,0.3) 0 10%, transparent 10% 20%);
+            animation: pulseComm 3s infinite;
+        }
+
         @keyframes spinConic {
             from { transform: rotate(0deg); }
             to   { transform: rotate(360deg); }
@@ -359,6 +371,12 @@
         @keyframes gridMove {
             from { background-position: 0 0, 0 0; }
             to   { background-position: 40px 40px, 40px 40px; }
+        }
+
+        @keyframes pulseComm {
+            0%   { transform: scale(1);   opacity: 0.8; }
+            50%  { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1);   opacity: 0.8; }
         }
 
         .theory-box {
@@ -587,23 +605,46 @@
                             <option value="chronology">Chronology Protection</option>
                             <option value="bootstrap">Bootstrap Stabilization</option>
                         </select>
-                        <div id="causal-visual" class="causal-loop-visual"></div>
-                        <button class="control-btn btn-warning" onclick="detectCausalViolations()">Detect Causal Violations</button>
-                        <button class="control-btn btn-primary" onclick="createTemporalLoop()">Create Temporal Loop</button>
-                        <div class="data-row">
-                            <span class="data-label">Causality Index</span>
-                            <span class="data-value" id="causality-index">0.000</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Paradox Risk</span>
-                            <span class="data-value" id="paradox-risk">0%</span>
-                        </div>
+                    <div id="causal-visual" class="causal-loop-visual"></div>
+                    <button class="control-btn btn-warning" onclick="detectCausalViolations()">Detect Causal Violations</button>
+                    <button class="control-btn btn-primary" onclick="createTemporalLoop()">Create Temporal Loop</button>
+                    <div class="data-row">
+                        <span class="data-label">Causality Index</span>
+                        <span class="data-value" id="causality-index">0.000</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Paradox Risk</span>
+                        <span class="data-value" id="paradox-risk">0%</span>
                     </div>
                 </div>
 
-                <div id="tab-bloch" class="tab-content">
-                    <div id="blochContainer"></div>
+                <div class="parameter-group" id="temporal-communication-module">
+                    <h3 style="color: #ff55ff; margin-bottom: 10px;">Temporal Communication</h3>
+                    <div class="equation-display">|ψ(t₁,t₂)⟩ = Σ αᵢ|ψᵢ(t₁)⟩⊗|ψᵢ(t₂)⟩</div>
+                    <div class="theory-box">
+                        Temporal entanglement protocols link quantum states across different moments,
+                        enabling communication channels through time.
+                    </div>
+                    <label class="parameter-label">Entanglement Depth</label>
+                    <input type="range" id="ent-depth-slider" class="parameter-input" min="1" max="10" step="1" value="2">
+                    <label class="parameter-label">Time Offset Δt (μs)</label>
+                    <input type="range" id="time-offset-slider" class="parameter-input" min="0" max="1000" step="10" value="100">
+                    <div id="temporal-comm-visual" class="temporal-comm-visual"></div>
+                    <button class="control-btn btn-primary" onclick="establishTemporalEntanglement()">Establish Temporal Entanglement</button>
+                    <div class="data-row">
+                        <span class="data-label">Entanglement Fidelity</span>
+                        <span class="data-value" id="entanglement-fidelity">0.000</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Communication Latency</span>
+                        <span class="data-value" id="comm-latency">0 μs</span>
+                    </div>
                 </div>
+            </div>
+
+            <div id="tab-bloch" class="tab-content">
+                <div id="blochContainer"></div>
+            </div>
 
                 <div id="tab-statistics" class="tab-content">
                     <div class="chart-container">
@@ -1632,6 +1673,22 @@
             document.getElementById('quantum-limit').textContent = quantumLimit.toExponential(3) + ' eV·s';
 
             log(`Uncertainty bounds calculated (ΔT=${dT}, scale=${energyScale} eV)`, 'info');
+        }
+
+        function establishTemporalEntanglement() {
+            const depth = parseInt(document.getElementById('ent-depth-slider').value, 10);
+            const offset = parseFloat(document.getElementById('time-offset-slider').value);
+
+            const fidelity = Math.max(0, Math.min(1, 1 - 0.02 * (depth - 1)));
+            const latency = offset / (depth + 1);
+
+            document.getElementById('entanglement-fidelity').textContent = fidelity.toFixed(3);
+            document.getElementById('comm-latency').textContent = latency.toFixed(1) + ' μs';
+
+            const visual = document.getElementById('temporal-comm-visual');
+            if (visual) visual.style.animation = 'pulseComm 1.5s infinite';
+
+            log(`Temporal entanglement established (depth=${depth}, Δt=${offset} μs)`, 'success');
         }
         /* === Experiment Loader === */
 document.getElementById('expLoader').addEventListener('change', async (e) => {
