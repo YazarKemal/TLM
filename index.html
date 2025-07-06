@@ -1290,8 +1290,9 @@
 
     // Bloch sekmesine geçerken tuvali yeniden boyutlandır
     if (tabName === 'bloch' && blochRenderer && blochCamera) {
-        blochRenderer.setSize(window.innerWidth, window.innerHeight);
-        blochCamera.aspect = window.innerWidth / window.innerHeight;
+        const cont = document.getElementById('blochContainer');
+        blochRenderer.setSize(cont.clientWidth, cont.clientHeight);
+        blochCamera.aspect = cont.clientWidth / cont.clientHeight;
         blochCamera.updateProjectionMatrix();
     }
 
@@ -1433,30 +1434,38 @@
         let dynamicsChart, histogramChart;
         
         function initializeBlochSphere() {
+            const container = document.getElementById('blochContainer');
+
             blochScene = new THREE.Scene();
 
             blochCamera = new THREE.PerspectiveCamera(
                 75,
-                window.innerWidth / window.innerHeight,
+                container.clientWidth / container.clientHeight,
                 0.1,
                 1000
             );
             blochCamera.position.z = 3;
 
-            blochRenderer = new THREE.WebGLRenderer();
-            blochRenderer.setSize(window.innerWidth, window.innerHeight);
-            document.body.appendChild(blochRenderer.domElement);
+            blochRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            blochRenderer.setSize(container.clientWidth, container.clientHeight);
+            blochRenderer.domElement.style.width  = '100%';
+            blochRenderer.domElement.style.height = '100%';
+            container.appendChild(blochRenderer.domElement);
 
             blochSphere = new THREE.Mesh(
                 new THREE.SphereGeometry(1, 32, 32),
                 new THREE.MeshBasicMaterial({ color: 0xaaaaaa, wireframe: true })
             );
             blochScene.add(blochSphere);
-
-            const axesHelper = new THREE.AxesHelper(1.5);
-            blochScene.add(axesHelper);
+            blochScene.add(new THREE.AxesHelper(1.5));
 
             animateBloch();
+
+            window.addEventListener('resize', () => {
+                blochRenderer.setSize(container.clientWidth, container.clientHeight);
+                blochCamera.aspect = container.clientWidth / container.clientHeight;
+                blochCamera.updateProjectionMatrix();
+            });
         }
 
         function animateBloch() {
